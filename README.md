@@ -3,6 +3,6 @@
 Proyecto de java intermedio,
 juevo estilo pokemon en cosnsola de java
 
-Integrandes:
+Integrantes:
 - Francisco
 - Saúl

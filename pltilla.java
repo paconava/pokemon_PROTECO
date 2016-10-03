@@ -14,7 +14,11 @@
  */
 
 //import java.util.Scanner;
-
-public class <nombre_clase>{
+/**
+ * <descripciOn>
+ * @author paco 
+ * @author saul
+*/
+class <nombre_clase>{
 
 }

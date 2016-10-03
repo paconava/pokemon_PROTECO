@@ -14,10 +14,12 @@
 
 //import java.util.Scanner;
 /**
- * <descripciOn>
+ * Clase que extiende de Monstruo y lo extiende definiendo
+ * algunas caractetísticas de forma específica para los 
+ * monstruos de fuego
  * @author paco 
  * @author saul
 */
-class <nombre_clase>{
-
+public abstract class MonstruoFuego extends Monstruo{
+    
 }

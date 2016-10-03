@@ -14,10 +14,12 @@
 
 //import java.util.Scanner;
 /**
- * <descripciOn>
+ * Clase que hereda de Monstruo y lo extiende definiendo
+ * algunas características especificas de los Monstruos
+ * tipo eléctrico
  * @author paco 
  * @author saul
 */
-class <nombre_clase>{
+public abstract class MonstruoElectrico extends Monstruo{
 
 }

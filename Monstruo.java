@@ -14,6 +14,11 @@
  */
 
 //import java.util.Scanner;
+import java.io.File;
+import java.io.FileReader;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.FileNotFoundException;
 
 /**
  * Clase abstracta Monstro que contiene un grupo de 
@@ -41,8 +46,37 @@ public abstract class Monstruo{
 
     // Constructor
     public int numGenericos = 0;
-    public Monstruo(String apodo,String tipo,){ 
-	
+    public Monstruo( String tipo ) {
+	++numGenericos;
+	this.TIPO = tipo;
+	this.HP_BASE = 15 + (int)(Math.random()*10);
+	this.ATAQUE_BASE = 10 + (int)(Math.random()*10);
+	this.DEFENSA_BASE = 10 + (int)(Math.random()*10);
+	this.VELOCIDAD_BASE = 10 + (int)(Math.random()*10);
+	this.apodo = "Pokemon genérico " + numGenericos;
+	this.nivel = 1;
+	this.estado = "ok";
+	this.expNecesaria = 100;
+    }
+
+    public Monstruo(
+	    String tipo,
+	    int hpBase,
+	    int ataqueBase,
+	    int defBase,
+	    int velBase,
+	    String apodo,
+	    byte nivel
+    ){ 
+	this.TIPO = tipo;
+	this.HP_BASE = hpBase;
+	this.ATAQUE_BASE = hpBase;
+	this.DEFENSA_BASE = defBase;
+	this.VELOCIDAD_BASE = velBasE;
+	this.apodo = apodo;
+	this.nivel = nivel;
+	this.estado = "ok";
+	this.expNecesarioa = 100 * nuvel;
     }
 
     // Atributos
@@ -53,6 +87,7 @@ public abstract class Monstruo{
     protected int defensa;
     protected int velocidad;
     protected String estado = "Ok";
+    protected int expNecesaria;
 
     // el MEtodo recibirDaño venia  con ñ y lo deje igual
     /**
@@ -134,7 +169,28 @@ public abstract class Monstruo{
 
     public abstract void ataque1(Monstruo objetivo);
     public abstract void ataque2(Monstruo objetivo);
-
+    
+    /**
+     * Método aplicado cuando un monstruo derrota a otro
+     * por lo cual recibé cierta cantidad de experiencia
+     * posibilitandole así subir de nivel
+     * @param vencido Monstruo que se acaba de derrotar 
+     * para acerse acreedor de experiencia
+     */
+    public void recibirExperiencia( Monstruo vencido ){
+	// Se recibe 100 por un Monstruo nivel 1, 150 por el nivel 2
+	//  200 por el nivel 3 etc..
+	expNecesaria -= (vencido.nivel * 50 + 50);
+	//Si la expNecesarioa es menor a 0 se pasa de nivel
+	if( expNecesaria <= 0 ){
+	    ++nivel;    
+	    expNecesaria += 100*nivel;
+	    System.out.println("Felicitaciones, tu "+
+		    this.getClass().getName() + "\"" + apodo"\"" +
+		    "ha subido al nivel: " + nivel
+	    );
+	}
+    }
     // Funciones estandar de consulta y modificaciOn
     public void setHp( int hp ){
 	this.hp = hp;
@@ -183,5 +239,41 @@ public abstract class Monstruo{
     }
     public String getEstado(){
 	return this.estado;
+    }
+
+    // Sobreescritura del mEtodo toString de pokEmon que imprime sus 
+    //  datos en tarjeta ascii
+    public String toString(){
+	File tarjetaPokemon = new File("./monstruos_ascii/pokemon1.txt");
+	String espacio = r(" ",25); // 25 espacios
+	try{
+	    FileReader fr = new FileReader( tarjetaPokemon );
+	    BufferedReader br = new BufferedReader( fr );
+	    for( int i = 1; i <= 17; ++i ){
+		System.out.println(espacio + br.readLine());
+	    }
+	    String mons = this.getClass().getName();
+	    int espacio = mons.length();
+	    String rd = r(".",espacio/2 + espacio %2);
+	    String ri = r(".",espacio/2);
+	    System.out.println("|"+rd+mons+ri+"|");
+	    System.out.println(espacio + br.readLine());
+
+	    fr.close();
+	    br.close();
+	}catch(FileNotFoundException fnfe){
+	    System.out.println("Tarjeta de monstruo no encontrada");    
+	}catch(IOException ioe){
+	    System.out.println("Error al leer la tarjeta de monstruo");   
+	}
+
+    }
+
+    public static r(String c,int n){
+	String r = "";
+	for(int i = 1; i <= n; ++i){
+	    r += "c";
+	} 
+	return r;
     }
 }

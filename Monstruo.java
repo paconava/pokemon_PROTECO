@@ -30,23 +30,24 @@ import java.io.FileNotFoundException;
  */
 public abstract class Monstruo{ 
 
-    protected static final String TIPO; // Agua, fuego, hierba, elEctrico
+    protected final String TIPO; // Agua, fuego, hierba, elEctrico
 
     // Valores base para todo monstruo nivel 1 (aUn por definirse)
-    protected static final int HP_BASE; // El hp de un monstruo nivel 1
-    protected static final int ATAQUE_BASE; // El ataque de un monstruo nivel 1
-    protected static final int DEFENSA_BASE; // La defensa de un monstruo nivel 1
-    protected static final int VELOCIDAD_BASE; // La velocidad de un monstruo nivel 1
+    protected final int HP_BASE; // El hp de un monstruo nivel 1
+    protected final int ATAQUE_BASE; // El ataque de un monstruo nivel 1
+    protected final int DEFENSA_BASE; // La defensa de un monstruo nivel 1
+    protected final int VELOCIDAD_BASE; // La velocidad de un monstruo nivel 1
     
     // Tazas de aumento de atributos que otorgan las pociones
     //  aun por definir
-    public static final int AUMENTO_HP = 0.2; // 20% 
-    public static final int AUMENTO_ATAQUE =  0.10; // 10% 
-    public static final int AUMENTO_DEFENSA = 0.15; // 15%
+    public final double AUMENTO_HP = 0.2; // 20% 
+    public final double AUMENTO_ATAQUE =  0.10; // 10% 
+    public final double AUMENTO_DEFENSA = 0.15; // 15%
 
     // Constructor
-    public int numGenericos = 0;
+    public static int numGenericos = 0;
     public Monstruo( String tipo ) {
+	this.nombre = this.getClass().getName();
 	++numGenericos;
 	this.TIPO = tipo;
 	this.HP_BASE = 15 + (int)(Math.random()*10);
@@ -68,25 +69,27 @@ public abstract class Monstruo{
 	    String apodo,
 	    byte nivel
     ){ 
+	this.nombre = this.getClass().getName();
 	this.TIPO = tipo;
 	this.HP_BASE = hpBase;
 	this.ATAQUE_BASE = hpBase;
 	this.DEFENSA_BASE = defBase;
-	this.VELOCIDAD_BASE = velBasE;
+	this.VELOCIDAD_BASE = velBase;
 	this.apodo = apodo;
 	this.nivel = nivel;
 	this.estado = "ok";
-	this.expNecesarioa = 100 * nuvel;
+	this.expNecesaria = 100 * nivel;
     }
 
     // Atributos
+    protected String nombre;
     protected String apodo;
     protected byte nivel; // 0 -- 100
     protected int hp;
     protected int ataque;
     protected int defensa;
     protected int velocidad;
-    protected String estado = "Ok";
+    protected String estado;
     protected int expNecesaria;
 
     // el MEtodo recibirDaño venia  con ñ y lo deje igual
@@ -99,7 +102,7 @@ public abstract class Monstruo{
 	if(danio < 0){ danio = 0; }
 	this.hp -= danio;
 	if( this.hp <= 0 ){
-	    this.estado = "Fuera de combate";    
+	    this.estado = "fuera de combate";    
 	}
     }
 
@@ -131,34 +134,46 @@ public abstract class Monstruo{
      * @return Multiplicador que puede tener valor de 0.5, 1 o 2
      */
     protected double multiplicadorElemental( Monstruo objetivo ){
-	if( this.TIPO.compareToIgnoreCase("fuego") == 0 ){
-	    if( objetivo instanceof MonstruoHierva ){
+	if( this.getTipo().compareTo("fuego") == 0 ){
+	    if( objetivo.getTipo().compareTo("hierba")  == 0){
 		return 2;
-	    }else if( objetivo instanceof MonstruoAgua || objetivo instanceof MonstruoFuego ){
+	    }else if( 
+		    objetivo.getTipo().compareTo("agua") == 0 || 
+		    objetivo.getTipo().compareTo("fuego") == 0
+	    ){
 		return 0.5;
 	    }else{
 		return 1;
 	    } 
-	}else if( this.TIPO.compareToIgnoreCase("agua") == 0 ){
-	    if( objetivo instanceof MonstruoFuego ){
+	}else if( this.TIPO.compareTo("agua") == 0 ){
+	    if( objetivo.getTipo().compareTo("fuego") == 0 ){
 		return 2;
-	    }else if( objetivo instanceof MonstruoAgua || objetivo instanceof MonstruoHierba ){
+	    }else if( 
+		    objetivo.getTipo().compareTo("agua") == 0 || 
+		    objetivo.getTipo().compareTo("hierba") == 0
+	    ){
 		return 0.5;
 	    }else{
 		return 1;
 	    } 
 	}else if( this.TIPO.compareToIgnoreCase("hierva") == 0 ){
-	    if( objetivo instanceof MonstruoAgua ){
+	    if( objetivo.getTipo().compareTo("agua") == 0 ){
 		return 2;
-	    }else if( objetivo instanceof MonstruoHierba || objetivo instanceof MonstruoFuego){
+	    }else if( 
+		    objetivo.getTipo().compareTo("hierba") == 0 ||
+		    objetivo.getTipo().compareTo("fuego") == 0
+	    ){
 		return 0.5;
 	    }else{
 		return 1;
 	    } 
 	}else if( this.TIPO.compareToIgnoreCase("electrico") == 0 ){
-	    if( objetivo instanceof MonstuoAgua ){
+	    if( objetivo.getTipo().compareTo("agua") == 0 ){
 		return 2;
-	    }else if( objetivo instanceof MonstruoHierba || objetivo instanceof MonstuoElectrico ){
+	    }else if( 
+		    objetivo.getTipo().compareTo("hierba") == 0 ||
+		    objetivo.getTipo().compareTo("electrico") == 0
+	    ){
 		return 0.5;
 	    }else{
 		return 1;
@@ -169,6 +184,23 @@ public abstract class Monstruo{
 
     public abstract void ataque1(Monstruo objetivo);
     public abstract void ataque2(Monstruo objetivo);
+
+    /**
+     * Metodo general de los Monstruos para calcular daño
+     * infringido
+     * @param enemigo Monstuo que recibirá el daño
+     */
+    protected int calcDanio( Monstruo enemigo ){
+	int impacto = 0;
+	if( (int)(Math.random()*5) != 0 ){ // 80% probabilidad de acertar
+	    impacto = (this.getAtaque() - enemigo.getDefensa());
+	    impacto *= this.multiplicadorElemental( enemigo );
+	    if( (int)(Math.random()*10) == 0 ){ // 8% de golpe crItico
+		impacto *= 2;
+	    }
+	}
+	return impacto;
+    }
     
     /**
      * Método aplicado cuando un monstruo derrota a otro
@@ -177,21 +209,41 @@ public abstract class Monstruo{
      * @param vencido Monstruo que se acaba de derrotar 
      * para acerse acreedor de experiencia
      */
-    public void recibirExperiencia( Monstruo vencido ){
+    protected void recibirExperiencia( Monstruo vencido ){
 	// Se recibe 100 por un Monstruo nivel 1, 150 por el nivel 2
 	//  200 por el nivel 3 etc..
 	expNecesaria -= (vencido.nivel * 50 + 50);
 	//Si la expNecesarioa es menor a 0 se pasa de nivel
 	if( expNecesaria <= 0 ){
-	    ++nivel;    
-	    expNecesaria += 100*nivel;
-	    System.out.println("Felicitaciones, tu "+
-		    this.getClass().getName() + "\"" + apodo"\"" +
-		    "ha subido al nivel: " + nivel
+	    subirNivel();
+	    System.out.println("Felicitaciones, tu " +
+		    nombre + ": \"" + apodo + "\"" +
+		    " ha subido al nivel: " + nivel
 	    );
 	}
     }
+
+    /**
+     * Método que actualiza las estadisticas del monstruo al
+     * subir de nivel
+     */
+    protected void subirNivel(){
+	++nivel;
+	expNecesaria += 100*nivel;
+	ataque = ATAQUE_BASE * nivel;
+	defensa = DEFENSA_BASE * nivel;
+	velocidad = VELOCIDAD_BASE * nivel;
+	if( expNecesaria <= 0){ subirNivel(); } // Ya saben, por si acaso
+						// un monstruo lv uno mata
+						// a uno lv 100 y empieza
+						// a subir niveles a lo 
+						// loco
+    } 
+
     // Funciones estandar de consulta y modificaciOn
+    public String getTipo(){
+	return this.TIPO;
+    }
     public void setHp( int hp ){
 	this.hp = hp;
     }
@@ -204,17 +256,11 @@ public abstract class Monstruo{
     public String getApodo(){
 	return this.apodo;
     }
-    public void setNivel( int nivel ){
+    public void setNivel( byte nivel ){
 	this.nivel = nivel;
     }
-    public int getNivel(){
+    public byte getNivel(){
 	return this.nivel;
-    }
-    public void setDefensa( int defensa ){
-	this.defensa = defensa;
-    }
-    public int getDefensa(){
-	return this.defensa;
     }
     public void setAtaque( int ataque ){
 	this.ataque = ataque;
@@ -244,20 +290,28 @@ public abstract class Monstruo{
     // Sobreescritura del mEtodo toString de pokEmon que imprime sus 
     //  datos en tarjeta ascii
     public String toString(){
+	String cadenaMonstruo = "";
 	File tarjetaPokemon = new File("./monstruos_ascii/pokemon1.txt");
 	String espacio = r(" ",25); // 25 espacios
 	try{
 	    FileReader fr = new FileReader( tarjetaPokemon );
 	    BufferedReader br = new BufferedReader( fr );
 	    for( int i = 1; i <= 17; ++i ){
-		System.out.println(espacio + br.readLine());
+		cadenaMonstruo += espacio + br.readLine() + "\n";
 	    }
-	    String mons = this.getClass().getName();
-	    int espacio = mons.length();
-	    String rd = r(".",espacio/2 + espacio %2);
-	    String ri = r(".",espacio/2);
-	    System.out.println("|"+rd+mons+ri+"|");
-	    System.out.println(espacio + br.readLine());
+	    int disponible = 28 - nombre.length();
+	    String ri = r(".",disponible/2 + disponible%2);
+	    String rd = r(".",disponible/2);
+	    cadenaMonstruo += "|"+ri+nombre+rd+"|\n";
+	    disponible = 28 - ("Alias: "+apodo).length();
+	    ri = r(".",disponible/2 + disponible%2);
+	    rd = r(".",disponible/2);
+	    cadenaMonstruo += "|"+ri+"Alias: "+apodo+rd+"|\n";
+	    disponible = 28 - ("Nivel: "+nivel).length();
+	    ri = r(".",disponible/2 + disponible%2);
+	    rd = r(".",disponible/2);
+	    cadenaMonstruo += "|"+ri+"Nivel: "+nivel+rd+"|\n";
+	    cadenaMonstruo += espacio + br.readLine() + "\n";
 
 	    fr.close();
 	    br.close();
@@ -266,10 +320,11 @@ public abstract class Monstruo{
 	}catch(IOException ioe){
 	    System.out.println("Error al leer la tarjeta de monstruo");   
 	}
+	return cadenaMonstruo;
 
     }
 
-    public static r(String c,int n){
+    public static String r(String c,int n){
 	String r = "";
 	for(int i = 1; i <= n; ++i){
 	    r += "c";

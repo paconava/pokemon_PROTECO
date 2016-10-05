@@ -291,27 +291,35 @@ public abstract class Monstruo{
     //  datos en tarjeta ascii
     public String toString(){
 	String cadenaMonstruo = "";
-	File tarjetaPokemon = new File("./monstruos_ascii/pokemon1.txt");
+	File tarjetaPokemon = new
+	File("./monstruos_ascii/pokemon"+(int)(Math.random()*14+1)+".txt");
 	String espacio = r(" ",25); // 25 espacios
 	try{
 	    FileReader fr = new FileReader( tarjetaPokemon );
 	    BufferedReader br = new BufferedReader( fr );
-	    for( int i = 1; i <= 17; ++i ){
-		cadenaMonstruo += espacio + br.readLine() + "\n";
-	    }
+	    cadenaMonstruo += espacio + br.readLine() + "\n";
 	    int disponible = 28 - nombre.length();
 	    String ri = r(".",disponible/2 + disponible%2);
 	    String rd = r(".",disponible/2);
-	    cadenaMonstruo += "|"+ri+nombre+rd+"|\n";
+	    cadenaMonstruo += espacio+"|"+ri+nombre+rd+"|\n";
+	    for( int i = 2; i <= 17; ++i ){
+		cadenaMonstruo += espacio + br.readLine() + "\n";
+	    }
+	    ri = r("_",28);
+	    cadenaMonstruo += espacio+"|"+ri+"|\n";
 	    disponible = 28 - ("Alias: "+apodo).length();
-	    ri = r(".",disponible/2 + disponible%2);
-	    rd = r(".",disponible/2);
-	    cadenaMonstruo += "|"+ri+"Alias: "+apodo+rd+"|\n";
+	    ri = r(" ",disponible/2 + disponible%2);
+	    rd = r(" ",disponible/2);
+	    cadenaMonstruo += espacio+"|"+ri+"Alias: "+apodo+rd+"|\n";
 	    disponible = 28 - ("Nivel: "+nivel).length();
-	    ri = r(".",disponible/2 + disponible%2);
-	    rd = r(".",disponible/2);
-	    cadenaMonstruo += "|"+ri+"Nivel: "+nivel+rd+"|\n";
-	    cadenaMonstruo += espacio + br.readLine() + "\n";
+	    ri = r(" ",disponible/2 + disponible%2);
+	    rd = r(" ",disponible/2);
+	    cadenaMonstruo += espacio+"|"+ri+"Nivel: "+nivel+rd+"|\n";
+	    disponible = 28 - ("Exp faltante: "+expNecesaria).length();
+	    ri = r(" ",disponible/2 + disponible%2);
+	    rd = r(" ",disponible/2);
+	    cadenaMonstruo += espacio+"|"+ri+"Exp faltante: "+expNecesaria+rd+"|\n";
+	    cadenaMonstruo += espacio+br.readLine() + "\n";
 
 	    fr.close();
 	    br.close();
@@ -327,7 +335,7 @@ public abstract class Monstruo{
     public static String r(String c,int n){
 	String r = "";
 	for(int i = 1; i <= n; ++i){
-	    r += "c";
+	    r += c;
 	} 
 	return r;
     }

@@ -21,5 +21,28 @@
  * @author saul
 */
 public abstract class MonstruoElectrico extends Monstruo{
+    // Constructor genErico
+    public MonstruoElectrico(){
+	super( "electrico" );	
+    }
+    // Constructor completo
+    public MonstruoElectrico(
+	    int hpBase,
+	    int atqBase,
+	    int defBase,
+	    int velBase,
+	    String apodo,
+	    byte nivel
+    ){
+	super(
+		"electrico",
+		hpBase,
+		atqBase,
+		defBase,
+		velBase,
+		apodo,
+		nivel
+	);
 
+    }
 }

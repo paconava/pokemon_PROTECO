@@ -21,5 +21,43 @@
  * @author saul
 */
 public abstract class MonstruoFuego extends Monstruo{
-    
+    // Constructor genErico
+    public MonstruoFuego(){
+	super( "fuego" );	
+    }
+    // Constructor completo
+    public MonstruoFuego(
+	    int hpBase,
+	    int atqBase,
+	    int defBase,
+	    int velBase,
+	    String apodo,
+	    byte nivel
+    ){
+	super(
+		"fuego",
+		hpBase,
+		atqBase,
+		defBase,
+		velBase,
+		apodo,
+		nivel
+	);
+
+    }
+
+    public void ataque1(Monstruo enemigo){
+	int danioInfringido;
+
+	System.out.println("¡" + this.apodo + " realiza lanza llamas!");
+	danioInfringido = calcDanio( enemigo );
+	enemigo.recibirDaño( danioInfringido );
+	System.out.println("El enemigo ha recibido: " + danioInfringido +
+		" de daño en este turno"
+	);
+
+	if( enemigo.estado.compareToIgnoreCase("fuera de combate") == 0 ){
+	    recibirExperiencia( enemigo );
+	}
+    }
 }

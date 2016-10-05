@@ -16,10 +16,33 @@
 /**
  * Clase que hereda de Monstruo y lo extiende definiendo
  * algunas características específicas de los monstruos
- * tipo hierva
+ * tipo hierba
  * @author paco 
  * @author saul
 */
-public abstract class MonstruoHierva extends Monstruo{
+public abstract class MonstruoHierba extends Monstruo{
+    // Constructor genErico
+    public MonstruoHierba(){
+	super( "hierba" );	
+    }
+    // Constructor completo
+    public MonstruoHierba(
+	    int hpBase,
+	    int atqBase,
+	    int defBase,
+	    int velBase,
+	    String apodo,
+	    byte nivel
+    ){
+	super(
+		"hierba",
+		hpBase,
+		atqBase,
+		defBase,
+		velBase,
+		apodo,
+		nivel
+	);
 
+    }
 }

@@ -50,13 +50,12 @@ public abstract class MonstruoAgua extends Monstruo{
 	int danioInfringido;
 
 	System.out.println("¡" + this.apodo + " realiza chorro de agua");
-	danioInfringido = calcDanio( enemigo );
-	enemigo.recibirDaño( danioInfringido );
+	danioInfringido = causarDanio( enemigo );
 	System.out.println("El enemigo ha recibido: " + danioInfringido +
 		" de daño en este turno"	
 	);
 	
-	if( enemigo.estado.compareToIgnoreCase("fuera de combate") ==0 ){
+	if( enemigo.estado.compareTo("fuera de combate") == 0 ){
 	    recibirExperiencia( enemigo );  
 	}
     }

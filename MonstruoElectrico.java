@@ -45,4 +45,18 @@ public abstract class MonstruoElectrico extends Monstruo{
 	);
 
     }
+
+    public void ataque1(Monstruo enemigo){
+	int danioInfringido;
+
+	System.out.prinlnt("¡" + this.apodo + "realiza latigazo");
+	danioInfringido = causarDanio( enemigo );
+	System.out.println("El enemigo ha recibido: " + danioInfringido +
+		" de daño en este turo"
+	);
+
+	if( enemigo.estado.compareTo("fuera de combate") == 0 ){
+	    recibirExperiencia( enemigo );
+	}
+    }
 }

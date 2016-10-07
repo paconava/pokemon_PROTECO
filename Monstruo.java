@@ -44,6 +44,10 @@ public abstract class Monstruo{
     public final double AUMENTO_ATAQUE =  0.10; // 10% 
     public final double AUMENTO_DEFENSA = 0.15; // 15%
 
+    // 25 espacios
+    protected static final String  ESPACIO = r(" ",25); 
+    protected static final String SALTOS = r("\n",25);
+
     // Constructor
     public static int numGenericos = 0;
     public Monstruo( String tipo ) {
@@ -110,7 +114,7 @@ public abstract class Monstruo{
      * Método recibirHp llamado cuando se usa una pocién
      */
     protected void recibirHp(){
-	hp += (HP_BASE + nivel) * AUMENTO_HP;
+	hp += (HP_BASE * nivel) * AUMENTO_HP;
     }
 
     /**
@@ -293,33 +297,32 @@ public abstract class Monstruo{
 	String cadenaMonstruo = "";
 	File tarjetaPokemon = new
 	File("./monstruos_ascii/pokemon"+(int)(Math.random()*14+1)+".txt");
-	String espacio = r(" ",25); // 25 espacios
 	try{
 	    FileReader fr = new FileReader( tarjetaPokemon );
 	    BufferedReader br = new BufferedReader( fr );
-	    cadenaMonstruo += espacio + br.readLine() + "\n";
+	    cadenaMonstruo += ESPACIO + br.readLine() + "\n";
 	    int disponible = 28 - nombre.length();
 	    String ri = r(".",disponible/2 + disponible%2);
 	    String rd = r(".",disponible/2);
-	    cadenaMonstruo += espacio+"|"+ri+nombre+rd+"|\n";
+	    cadenaMonstruo += ESPACIO+"|"+ri+nombre+rd+"|\n";
 	    for( int i = 2; i <= 17; ++i ){
-		cadenaMonstruo += espacio + br.readLine() + "\n";
+		cadenaMonstruo += ESPACIO + br.readLine() + "\n";
 	    }
 	    ri = r("_",28);
-	    cadenaMonstruo += espacio+"|"+ri+"|\n";
+	    cadenaMonstruo += ESPACIO+"|"+ri+"|\n";
 	    disponible = 28 - ("Alias: "+apodo).length();
 	    ri = r(" ",disponible/2 + disponible%2);
 	    rd = r(" ",disponible/2);
-	    cadenaMonstruo += espacio+"|"+ri+"Alias: "+apodo+rd+"|\n";
+	    cadenaMonstruo += ESPACIO+"|"+ri+"Alias: "+apodo+rd+"|\n";
 	    disponible = 28 - ("Nivel: "+nivel).length();
 	    ri = r(" ",disponible/2 + disponible%2);
 	    rd = r(" ",disponible/2);
-	    cadenaMonstruo += espacio+"|"+ri+"Nivel: "+nivel+rd+"|\n";
+	    cadenaMonstruo += ESPACIO+"|"+ri+"Nivel: "+nivel+rd+"|\n";
 	    disponible = 28 - ("Exp faltante: "+expNecesaria).length();
 	    ri = r(" ",disponible/2 + disponible%2);
 	    rd = r(" ",disponible/2);
-	    cadenaMonstruo += espacio+"|"+ri+"Exp faltante: "+expNecesaria+rd+"|\n";
-	    cadenaMonstruo += espacio+br.readLine() + "\n";
+	    cadenaMonstruo += ESPACIO+"|"+ri+"Exp faltante: "+expNecesaria+rd+"|\n";
+	    cadenaMonstruo += ESPACIO+br.readLine() + "\n";
 
 	    fr.close();
 	    br.close();
@@ -331,6 +334,109 @@ public abstract class Monstruo{
 	return cadenaMonstruo;
 
     }
+
+    protected void animacionDanio( byte tipoAtaque ){
+	String cadenaMonstruo = "";
+	File tarjetaPokemon = new
+	File("./monstruos_ascii/pokemon"+(int)(Math.random()*14+1)+".txt");
+	String tarjetaDanio;
+
+	if( tipoAtaque == 1 ){
+	    tarjetaDanio = DANIO_NORMAL;
+	}else if( tipoAtaque == 2 ){
+	    tarjetaDanio = DANIO_CRITICO;    
+	}else{
+	    tarjetaDanio = DANIO_MINIMO;   
+	}
+
+	try{
+	    int i;
+	    FileReader fr = new FileReader( tarjetaPokemon );
+	    BufferedReader br = new BufferedReader( fr );
+	    for( i = 1; i <= 18; ++i ){
+		cadenaMonstruo += ESPACIO + br.readLine() + "\n";
+	    }
+	    fr.close();
+	    br.close();
+
+	    for( i = 1; i <= 4; ++i ){
+		System.out.println(SALTOS);
+		System.out.println(cadenaMonstruo);
+		Thread.sleep(120);
+		System.out.println(SALTOS);
+		System.out.println(tarjetaDanio);
+		Thread.sleep(120);
+	    }
+	    System.out.println(SALTOS); 
+	    
+	}catch(FileNotFoundException fnfe){
+	    System.out.println("Tarjeta de monstruo no encontrada");    
+	}catch(IOException ioe){
+	    System.out.println("Error al leer la tarjeta de monstruo");   
+	}catch(InterruptedException ie){
+	    System.out.println("Error en la función Thread.sleep");
+	}
+    }
+
+    protected static final String DANIO_MINIMO = "" +
+	ESPACIO + ".----------------------------.\n" +
+	ESPACIO + "|............................|\n" +
+	ESPACIO + "|............................|\n" +
+	ESPACIO + "|............................|\n" +
+	ESPACIO + "|............................|\n" +
+	ESPACIO + "|............................|\n" +
+	ESPACIO + "|............................|\n" +
+	ESPACIO + "|............................|\n" +
+	ESPACIO + "|............................|\n" +
+	ESPACIO + "|............................|\n" +
+	ESPACIO + "|............................|\n" +
+	ESPACIO + "|............................|\n" +
+	ESPACIO + "|............................|\n" +
+	ESPACIO + "|............................|\n" +
+	ESPACIO + "|............................|\n" +
+	ESPACIO + "|............................|\n" +
+	ESPACIO + "|............................|\n" +
+        ESPACIO + "`----------------------------'\n";
+
+    protected static final String DANIO_NORMAL = "" +
+    ESPACIO + ".-----*----------------*-----.\n" +
+    ESPACIO + "|.....**..............**.....|\n" +
+    ESPACIO + "|......**............**......|\n" +
+    ESPACIO + "|.......**..........**.......|\n" +
+    ESPACIO + "|........**........**........|\n" +
+    ESPACIO + "|........-**......**.........|\n" +
+    ESPACIO + "|..........**....**..........|\n" +
+    ESPACIO + "|...........**..**...........|\n" +
+    ESPACIO + "|.............**.............|\n" +
+    ESPACIO + "|.............**.............|\n" +
+    ESPACIO + "|...........**..**...........|\n" +
+    ESPACIO + "|..........**....**..........|\n" +
+    ESPACIO + "|.........**......**.........|\n" +
+    ESPACIO + "|........**........**........|\n" +
+    ESPACIO + "|.......**..........**.......|\n" +
+    ESPACIO + "|......**............**......|\n" +
+    ESPACIO + "|.....**..............**.....|\n" +
+    ESPACIO + "`-----*----------------*-----'\n";
+
+    protected static final String DANIO_CRITICO = "" +
+    ESPACIO + "*-------------**-------------*\n" +
+    ESPACIO + "***.......\\..**...........***\n" +
+    ESPACIO + "|.***.........**..../....***.|\n" +
+    ESPACIO + "|...***.......**.......***...|\n" +
+    ESPACIO + "|.....***.....**.....***.....|\n" +
+    ESPACIO + "|..\\....***...**...***.../...|\n" +
+    ESPACIO + "|.........***.**.***.........|\n" +
+    ESPACIO + "|.......\\.*(******)*.........|\n" +
+    ESPACIO + "*.*.*.*.**(***()***)*.*.*.*.*|\n" +
+    ESPACIO + "|*.*.*.*.*(***()***)**.*.*.*.*\n" +
+    ESPACIO + "|../......*(******)*.........|\n" +
+    ESPACIO + "|.........***.**.***.....\\..|\n" +
+    ESPACIO + "|..../..***...**...***.......|\n" +
+    ESPACIO + "|.....***.....**.....***.....|\n" +
+    ESPACIO + "|...***.......**.......***...|\n" +
+    ESPACIO + "|.***.........**.........***.|\n" +
+    ESPACIO + "***......./...**.....\\.....***\n" +
+    ESPACIO + "*-------------**-------------*\n";
 
     public static String r(String c,int n){
 	String r = "";

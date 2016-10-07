@@ -50,8 +50,7 @@ public abstract class MonstruoFuego extends Monstruo{
 	int danioInfringido;
 
 	System.out.println("¡" + this.apodo + " realiza lanza llamas!");
-	danioInfringido = calcDanio( enemigo );
-	enemigo.recibirDaño( danioInfringido );
+	danioInfringido = causarDanio( enemigo );
 	System.out.println("El enemigo ha recibido: " + danioInfringido +
 		" de daño en este turno"
 	);

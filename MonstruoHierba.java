@@ -45,4 +45,18 @@ public abstract class MonstruoHierba extends Monstruo{
 	);
 
     }
+
+    public void ataque1(Monstruo enemigo){
+	int danioInfringido;
+
+	System.out.println("¡" + this.apodo + "realiza impactrueno");
+	danioInfringido = causarDanio( enemigo );
+	System.out.pritln("El enemigo ha recibido: " + danioInfringido +
+		" de naño en este turno"
+	);
+
+	if( enemigo.estado.compareTo("fuera de combate") == 0 ){
+	    recibirExperiencia( enemigo );    
+	}
+    }
 }

@@ -25,10 +25,22 @@ class monstruoRaro extends MonstruoAgua{
 	monstruoRaro raro = new monstruoRaro();
 	monstruoRaro monstruo2 = new monstruoRaro();
 	monstruoRaro cosa = new monstruoRaro();
+	monstruoRaro monstruo4 = new monstruoRaro();
 
 	System.out.println("El pokemon es: ");
 	System.out.println(raro);
 	System.out.println(monstruo2);
 	System.out.println(cosa);
+
+	try{
+	System.out.println("Ahí va la animación");
+	Thread.sleep(1000);
+	raro.animarDanio( (byte) 0);
+	Thread.sleep(1000);
+	monstruo2.animarDanio( (byte) 1);
+	Thread.sleep(1000);
+	cosa.animarDanio( (byte) 2);
+	monstruo4.recibirHp();
+	}catch(Exception e){}
     }
 }

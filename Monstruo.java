@@ -96,13 +96,12 @@ public abstract class Monstruo{
     protected String estado;
     protected int expNecesaria;
 
-    // el MEtodo recibirDaño venia  con ñ y lo deje igual
     /**
-     * Método recibirDaño que le resta al monstruo que lo invoca
+     * Método recibirDanio que le resta al monstruo que lo invoca
      * la cantidad de daño especificada en su argumento
      * @param danio Daño que le propina el monstruo adversario
      */
-    protected void recibirDaño( int danio ){
+    protected void recibirDanio( int danio ){
 	if(danio < 0){ danio = 0; }
 	this.hp -= danio;
 	if( this.hp <= 0 ){
@@ -115,6 +114,7 @@ public abstract class Monstruo{
      */
     protected void recibirHp(){
 	hp += (HP_BASE * nivel) * AUMENTO_HP;
+	animarDanio( (byte) -1 );
     }
 
     /**
@@ -190,20 +190,30 @@ public abstract class Monstruo{
     public abstract void ataque2(Monstruo objetivo);
 
     /**
-     * Metodo general de los Monstruos para calcular daño
-     * infringido
+     * Metodo general de los Monstruos para ingringir daño
+     * a sus semejantes (¡Malditos salvajes!)
      * @param enemigo Monstuo que recibirá el daño
      */
-    protected int calcDanio( Monstruo enemigo ){
-	int impacto = 0;
+    protected int causarDanio( Monstruo enemigo ){
+	int danio = 0;
+	byte tipoDanio = 0;
+
 	if( (int)(Math.random()*5) != 0 ){ // 80% probabilidad de acertar
-	    impacto = (this.getAtaque() - enemigo.getDefensa());
-	    impacto *= this.multiplicadorElemental( enemigo );
+	    danio = (this.getAtaque() - enemigo.getDefensa());
+	    danio *= this.multiplicadorElemental( enemigo );
 	    if( (int)(Math.random()*10) == 0 ){ // 8% de golpe crItico
-		impacto *= 2;
+		danio *= 2;
+		tipoDanio = 2;
+	    }else{
+		tipoDanio = 1;
 	    }
+	}else{
+	    tipoDanio = 0;
 	}
-	return impacto;
+
+	enemigo.recibirDanio( danio );
+	enemigo.animarDanio( tipoDanio );
+	return danio;
     }
     
     /**
@@ -335,7 +345,7 @@ public abstract class Monstruo{
 
     }
 
-    protected void animacionDanio( byte tipoAtaque ){
+    protected void animarDanio( byte tipoAtaque ){
 	String cadenaMonstruo = "";
 	File tarjetaPokemon = new
 	File("./monstruos_ascii/pokemon"+(int)(Math.random()*14+1)+".txt");
@@ -345,6 +355,9 @@ public abstract class Monstruo{
 	    tarjetaDanio = DANIO_NORMAL;
 	}else if( tipoAtaque == 2 ){
 	    tarjetaDanio = DANIO_CRITICO;    
+	}else if( tipoAtaque == -1 ){
+	    // El daño negativo es la curaciOn :D
+	    tarjetaDanio = CURACION;
 	}else{
 	    tarjetaDanio = DANIO_MINIMO;   
 	}
@@ -378,6 +391,32 @@ public abstract class Monstruo{
 	}
     }
 
+    /**
+     * Cadena que forma la figura en ascii de la curación
+     */
+    protected static final String CURACION = "" +
+	ESPACIO + ".----------------------------.\n" +
+	ESPACIO + ".----------------------------.\n" +
+	ESPACIO + ".----------------------------.\n" +
+	ESPACIO + ".----------------------------.\n" +
+	ESPACIO + ".----------------------------.\n" +
+	ESPACIO + ".------- .:::. - .:::. ------.\n" +
+	ESPACIO + ".------ :::::::.::::::: -----.\n" +
+	ESPACIO + ".------ ::::::::::::::: -----.\n" +
+	ESPACIO + ".------ ':::::::::::::' -----.\n" +
+	ESPACIO + ".-------- ':::::::::' -------.\n" +
+	ESPACIO + ".---------- ':::::' ---------.\n" +
+	ESPACIO + ".------------ ':' -----------.\n" +
+	ESPACIO + ".-------------   ------------.\n" +
+	ESPACIO + ".----------------------------.\n" +
+	ESPACIO + ".----------------------------.\n" +
+	ESPACIO + ".----------------------------.\n" +
+	ESPACIO + ".----------------------------.\n" +
+        ESPACIO + "`----------------------------'\n";
+             
+    /**
+     * Cadena que forma la figura en ascii del daño mínimo
+     */
     protected static final String DANIO_MINIMO = "" +
 	ESPACIO + ".----------------------------.\n" +
 	ESPACIO + "|............................|\n" +
@@ -398,46 +437,59 @@ public abstract class Monstruo{
 	ESPACIO + "|............................|\n" +
         ESPACIO + "`----------------------------'\n";
 
+    /**
+     * Cadena que forma la figura en ascii del daño normal
+     */
     protected static final String DANIO_NORMAL = "" +
-    ESPACIO + ".-----*----------------*-----.\n" +
-    ESPACIO + "|.....**..............**.....|\n" +
-    ESPACIO + "|......**............**......|\n" +
-    ESPACIO + "|.......**..........**.......|\n" +
-    ESPACIO + "|........**........**........|\n" +
-    ESPACIO + "|........-**......**.........|\n" +
-    ESPACIO + "|..........**....**..........|\n" +
-    ESPACIO + "|...........**..**...........|\n" +
-    ESPACIO + "|.............**.............|\n" +
-    ESPACIO + "|.............**.............|\n" +
-    ESPACIO + "|...........**..**...........|\n" +
-    ESPACIO + "|..........**....**..........|\n" +
-    ESPACIO + "|.........**......**.........|\n" +
-    ESPACIO + "|........**........**........|\n" +
-    ESPACIO + "|.......**..........**.......|\n" +
-    ESPACIO + "|......**............**......|\n" +
-    ESPACIO + "|.....**..............**.....|\n" +
-    ESPACIO + "`-----*----------------*-----'\n";
+	ESPACIO + ".-----*----------------*-----.\n" +
+	ESPACIO + "|.....**..............**.....|\n" +
+	ESPACIO + "|......**............**......|\n" +
+	ESPACIO + "|.......**..........**.......|\n" +
+	ESPACIO + "|........**........**........|\n" +
+	ESPACIO + "|........-**......**.........|\n" +
+	ESPACIO + "|..........**....**..........|\n" +
+	ESPACIO + "|...........**..**...........|\n" +
+	ESPACIO + "|.............**.............|\n" +
+	ESPACIO + "|.............**.............|\n" +
+	ESPACIO + "|...........**..**...........|\n" +
+	ESPACIO + "|..........**....**..........|\n" +
+	ESPACIO + "|.........**......**.........|\n" +
+	ESPACIO + "|........**........**........|\n" +
+	ESPACIO + "|.......**..........**.......|\n" +
+	ESPACIO + "|......**............**......|\n" +
+	ESPACIO + "|.....**..............**.....|\n" +
+	ESPACIO + "`-----*----------------*-----'\n";
 
+    /**
+     * Cadena que forma la figura en ascii del daño crítico
+     */
     protected static final String DANIO_CRITICO = "" +
-    ESPACIO + "*-------------**-------------*\n" +
-    ESPACIO + "***.......\\..**...........***\n" +
-    ESPACIO + "|.***.........**..../....***.|\n" +
-    ESPACIO + "|...***.......**.......***...|\n" +
-    ESPACIO + "|.....***.....**.....***.....|\n" +
-    ESPACIO + "|..\\....***...**...***.../...|\n" +
-    ESPACIO + "|.........***.**.***.........|\n" +
-    ESPACIO + "|.......\\.*(******)*.........|\n" +
-    ESPACIO + "*.*.*.*.**(***()***)*.*.*.*.*|\n" +
-    ESPACIO + "|*.*.*.*.*(***()***)**.*.*.*.*\n" +
-    ESPACIO + "|../......*(******)*.........|\n" +
-    ESPACIO + "|.........***.**.***.....\\..|\n" +
-    ESPACIO + "|..../..***...**...***.......|\n" +
-    ESPACIO + "|.....***.....**.....***.....|\n" +
-    ESPACIO + "|...***.......**.......***...|\n" +
-    ESPACIO + "|.***.........**.........***.|\n" +
-    ESPACIO + "***......./...**.....\\.....***\n" +
-    ESPACIO + "*-------------**-------------*\n";
+	ESPACIO + "*-------------**-------------*\n" +
+	ESPACIO + "***.......\\..**...........***\n" +
+	ESPACIO + "|.***.........**..../....***.|\n" +
+	ESPACIO + "|...***.......**.......***...|\n" +
+	ESPACIO + "|.....***.....**.....***.....|\n" +
+	ESPACIO + "|..\\....***...**...***.../...|\n" +
+	ESPACIO + "|.........***.**.***.........|\n" +
+	ESPACIO + "|.......\\.*(******)*.........|\n" +
+	ESPACIO + "*.*.*.*.**(***()***)*.*.*.*.*|\n" +
+	ESPACIO + "|*.*.*.*.*(***()***)**.*.*.*.*\n" +
+	ESPACIO + "|../......*(******)*.........|\n" +
+	ESPACIO + "|.........***.**.***.....\\..|\n" +
+	ESPACIO + "|..../..***...**...***.......|\n" +
+	ESPACIO + "|.....***.....**.....***.....|\n" +
+	ESPACIO + "|...***.......**.......***...|\n" +
+	ESPACIO + "|.***.........**.........***.|\n" +
+	ESPACIO + "***......./...**.....\\.....***\n" +
+	ESPACIO + "*-------------**-------------*\n";
 
+    /**
+     * Método r (Acronimo de relleno)
+     * Se encarga de la creación de una cadena de "Relleno"
+     * conformada por un caracter repetido n veces
+     * @param c Carácter a repetir
+     * @param n Numero de veces que se repetira el carácter
+     */
     public static String r(String c,int n){
 	String r = "";
 	for(int i = 1; i <= n; ++i){

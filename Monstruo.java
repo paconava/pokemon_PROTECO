@@ -31,6 +31,7 @@ import java.io.FileNotFoundException;
 public abstract class Monstruo{ 
 
     protected final String TIPO; // Agua, fuego, hierba, elEctrico
+    protected final File ARCHIVO_TARJETA;
 
     // Valores base para todo monstruo nivel 1 (aUn por definirse)
     protected final int HP_BASE; // El hp de un monstruo nivel 1
@@ -44,46 +45,9 @@ public abstract class Monstruo{
     public final double AUMENTO_ATAQUE =  0.10; // 10% 
     public final double AUMENTO_DEFENSA = 0.15; // 15%
 
-    // 25 espacios
+    // Cadenas para aplicar formato de impresiOn
     protected static final String  ESPACIO = r(" ",25); 
-    protected static final String SALTOS = r("\n",25);
-
-    // Constructor
-    public static int numGenericos = 0;
-    public Monstruo( String tipo ) {
-	this.nombre = this.getClass().getName();
-	++numGenericos;
-	this.TIPO = tipo;
-	this.HP_BASE = 15 + (int)(Math.random()*10);
-	this.ATAQUE_BASE = 10 + (int)(Math.random()*10);
-	this.DEFENSA_BASE = 10 + (int)(Math.random()*10);
-	this.VELOCIDAD_BASE = 10 + (int)(Math.random()*10);
-	this.apodo = "Pokemon genérico " + numGenericos;
-	this.nivel = 1;
-	this.estado = "ok";
-	this.expNecesaria = 100;
-    }
-
-    public Monstruo(
-	    String tipo,
-	    int hpBase,
-	    int ataqueBase,
-	    int defBase,
-	    int velBase,
-	    String apodo,
-	    byte nivel
-    ){ 
-	this.nombre = this.getClass().getName();
-	this.TIPO = tipo;
-	this.HP_BASE = hpBase;
-	this.ATAQUE_BASE = hpBase;
-	this.DEFENSA_BASE = defBase;
-	this.VELOCIDAD_BASE = velBase;
-	this.apodo = apodo;
-	this.nivel = nivel;
-	this.estado = "ok";
-	this.expNecesaria = 100 * nivel;
-    }
+    protected static final String SALTOS = r("\n",43);
 
     // Atributos
     protected String nombre;
@@ -96,6 +60,63 @@ public abstract class Monstruo{
     protected String estado;
     protected int expNecesaria;
 
+    // Constructores
+    public static int numGenericos = 0;
+    public Monstruo( String tipo ) {
+	this.nombre = this.getClass().getName();
+	++numGenericos;
+	this.TIPO = tipo;
+	this.ARCHIVO_TARJETA = new File(
+		"./monstruos_ascii/pokemon"+
+		(int)(Math.random()*14+1)+".txt"
+	);
+	this.HP_BASE = 15 + (int)(Math.random()*10);
+	this.ATAQUE_BASE = 10 + (int)(Math.random()*10);
+	this.DEFENSA_BASE = 10 + (int)(Math.random()*10);
+	this.VELOCIDAD_BASE = 10 + (int)(Math.random()*10);
+	this.apodo = "Pokemon genérico " + numGenericos;
+	this.nivel = 1;
+	this.estado = "ok";
+	this.expNecesaria = 100;
+    }
+
+    public Monstruo(
+	    String tipo,
+	    File archTarjeta,
+	    int hpBase,
+	    int ataqueBase,
+	    int defBase,
+	    int velBase,
+	    String apodo,
+	    byte nivel
+    ){ 
+	this.nombre = this.getClass().getName();
+	this.TIPO = tipo;
+	this.ARCHIVO_TARJETA = archTarjeta;
+	this.HP_BASE = hpBase;
+	this.ATAQUE_BASE = hpBase;
+	this.DEFENSA_BASE = defBase;
+	this.VELOCIDAD_BASE = velBase;
+	this.apodo = apodo;
+	this.nivel = nivel;
+	this.estado = "ok";
+	this.expNecesaria = 100 * nivel;
+    }
+
+    // MEtodos
+
+    /**
+     * Método inicializar, regresa a su estado original los
+     * valores del monstruo que lo invoca
+     */
+    protected void inicializar(){
+	this.hp = HP_BASE * nivel;
+	this.ataque = ATAQUE_BASE * nivel;
+	this.defensa = DEFENSA_BASE * nivel;
+	this.velocidad = VELOCIDAD_BASE * nivel;
+	this.estado = "ok";
+    }
+
     /**
      * Método recibirDanio que le resta al monstruo que lo invoca
      * la cantidad de daño especificada en su argumento
@@ -105,6 +126,7 @@ public abstract class Monstruo{
 	if(danio < 0){ danio = 0; }
 	this.hp -= danio;
 	if( this.hp <= 0 ){
+	    System.out.println("El monstruo está fuera de combate");
 	    this.estado = "fuera de combate";    
 	}
     }
@@ -183,11 +205,8 @@ public abstract class Monstruo{
 		return 1;
 	    } 
 	}
-	return -1; // No conosco este nuevo tipo de pokEmon 
+	return -1; // No conosco este nuevo tipo de Monstruo 
     }
-
-    public abstract void ataque1(Monstruo objetivo);
-    public abstract void ataque2(Monstruo objetivo);
 
     /**
      * Metodo general de los Monstruos para ingringir daño
@@ -254,6 +273,10 @@ public abstract class Monstruo{
 						// loco
     } 
 
+    // MEtodos abstractos para definir en la descendencia
+    public abstract void ataque1(Monstruo objetivo);
+    public abstract void ataque2(Monstruo objetivo);
+
     // Funciones estandar de consulta y modificaciOn
     public String getTipo(){
 	return this.TIPO;
@@ -303,12 +326,18 @@ public abstract class Monstruo{
 
     // Sobreescritura del mEtodo toString de pokEmon que imprime sus 
     //  datos en tarjeta ascii
+
+    /**
+     * Metodo toString sobreescrive al método del mismo nombre de la 
+     * clase Object para poder imprimir a pantalla una tarjeta con el
+     * monstruo en cuestión
+     * @return Cadena en forma de tarjeta de monstruo
+     */
+    @Override
     public String toString(){
 	String cadenaMonstruo = "";
-	File tarjetaPokemon = new
-	File("./monstruos_ascii/pokemon"+(int)(Math.random()*14+1)+".txt");
 	try{
-	    FileReader fr = new FileReader( tarjetaPokemon );
+	    FileReader fr = new FileReader( ARCHIVO_TARJETA );
 	    BufferedReader br = new BufferedReader( fr );
 	    cadenaMonstruo += ESPACIO + br.readLine() + "\n";
 	    int disponible = 28 - nombre.length();
@@ -345,10 +374,16 @@ public abstract class Monstruo{
 
     }
 
+    // MEtodos referentes a la "animaciOn"
+    /**
+     * Método animarDanio que hace un intercalado entre la imagen
+     * del monstruo que la invoca y alguna carta de indole general que
+     * representa el daño/curación
+     * @param tipoAtaque Un byte indicando el tipo de ataque/curación que
+     * se le aplica al monstruo
+     */
     protected void animarDanio( byte tipoAtaque ){
 	String cadenaMonstruo = "";
-	File tarjetaPokemon = new
-	File("./monstruos_ascii/pokemon"+(int)(Math.random()*14+1)+".txt");
 	String tarjetaDanio;
 
 	if( tipoAtaque == 1 ){
@@ -364,7 +399,7 @@ public abstract class Monstruo{
 
 	try{
 	    int i;
-	    FileReader fr = new FileReader( tarjetaPokemon );
+	    FileReader fr = new FileReader( ARCHIVO_TARJETA );
 	    BufferedReader br = new BufferedReader( fr );
 	    for( i = 1; i <= 18; ++i ){
 		cadenaMonstruo += ESPACIO + br.readLine() + "\n";
@@ -372,7 +407,7 @@ public abstract class Monstruo{
 	    fr.close();
 	    br.close();
 
-	    for( i = 1; i <= 4; ++i ){
+	    for( i = 1; i <= 6; ++i ){
 		System.out.println(SALTOS);
 		System.out.println(cadenaMonstruo);
 		Thread.sleep(120);

@@ -12,7 +12,7 @@
 
  */
 
-//import java.util.Scanner;
+import java.util.Scanner;
 /**
  * <descripciOn>
  * @author paco 
@@ -26,6 +26,8 @@ class monstruoRaro extends MonstruoAgua{
 	monstruoRaro monstruo2 = new monstruoRaro();
 	monstruoRaro cosa = new monstruoRaro();
 	monstruoRaro monstruo4 = new monstruoRaro();
+	new Scanner(System.in).nextLine();
+	
 
 	System.out.println("El pokemon es: ");
 	System.out.println(raro);
@@ -40,6 +42,7 @@ class monstruoRaro extends MonstruoAgua{
 	monstruo2.animarDanio( (byte) 1);
 	Thread.sleep(1000);
 	cosa.animarDanio( (byte) 2);
+	Thread.sleep(1000);
 	monstruo4.recibirHp();
 	}catch(Exception e){}
     }

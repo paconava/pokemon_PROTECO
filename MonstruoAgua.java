@@ -21,12 +21,28 @@
  * @author saul
 */
 public abstract class MonstruoAgua extends Monstruo{ 
-    // Constructor genErico
+    // Constructores
+    /**
+     * Constructor genérico, puede crear Monstruos sin
+     * argumentos
+     */
     public MonstruoAgua(){
 	super( "agua" );	
     }
-    // Constructor completo
+
+    /**
+     * Constructor completo
+     * @param archTarjeta Objeto de tipo File con la ubicación de
+     * la tarjeta del Monstruo
+     * @param hpBase La vida base del monstruo
+     * @param atqBase El ataque base del monstruo
+     * @param defBase La defensa base del monstruo
+     * @param velBase La velocidad base del monstruo
+     * @param apodo El apodo del monstruo
+     * @param nivel El nivel en que inicia el monstruo
+     */
     public MonstruoAgua(
+	    File archTarjeta,
 	    int hpBase,
 	    int atqBase,
 	    int defBase,
@@ -36,6 +52,7 @@ public abstract class MonstruoAgua extends Monstruo{
     ){
 	super(
 		"agua",
+		File archTarjeta,
 		hpBase,
 		atqBase,
 		defBase,
@@ -46,6 +63,11 @@ public abstract class MonstruoAgua extends Monstruo{
 
     }
 
+    /**
+     * Método ataque1, que sobreescribe el método 
+     * abstracto con el mismo nombre de la clase monstruo
+     * @param enemigo Monstruo al cual se va a realizar el ataque
+     */
     public void ataque1(Monstruo enemigo){
 	int danioInfringido;
 

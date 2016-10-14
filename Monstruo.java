@@ -32,6 +32,7 @@ public abstract class Monstruo{
 
     protected final String TIPO; // Agua, fuego, hierba, elEctrico
     protected final File ARCHIVO_TARJETA;
+    protected final String TARJETA;
 
     // Valores base para todo monstruo nivel 1 (aUn por definirse)
     protected final int HP_BASE; // El hp de un monstruo nivel 1
@@ -47,7 +48,7 @@ public abstract class Monstruo{
 
     // Cadenas para aplicar formato de impresiOn
     protected static final String  ESPACIO = r(" ",25); 
-    protected static final String SALTOS = r("\n",43);
+    protected static final String SALTOS = r("\n",48);
 
     // Atributos
     protected String nombre;
@@ -70,6 +71,24 @@ public abstract class Monstruo{
 		"./monstruos_ascii/pokemon"+
 		(int)(Math.random()*14+1)+".txt"
 	);
+	String tarjetaMonstruo = "";
+	try{
+	    FileReader fr = new FileReader( ARCHIVO_TARJETA );
+	    BufferedReader br = new BufferedReader( fr );
+
+	    br.readLine(); 
+	    for( int i = 2; i <= 17; ++i ){
+		tarjetaMonstruo += ESPACIO + br.readLine() + "\n";
+	    }
+	    fr.close();
+	    br.close();
+	}catch(FileNotFoundException fnfe){
+	    System.out.println("Tarjeta de monstruo no encontrada");    
+	}catch(IOException ioe){
+	    System.out.println("Error al leer la tarjeta de monstruo");   
+	}
+	TARJETA = tarjetaMonstruo;
+
 	this.HP_BASE = 15 + (int)(Math.random()*10);
 	this.ATAQUE_BASE = 10 + (int)(Math.random()*10);
 	this.DEFENSA_BASE = 10 + (int)(Math.random()*10);
@@ -93,6 +112,25 @@ public abstract class Monstruo{
 	this.nombre = this.getClass().getName();
 	this.TIPO = tipo;
 	this.ARCHIVO_TARJETA = archTarjeta;
+
+	String tarjetaMonstruo = "";
+	try{
+	    FileReader fr = new FileReader( ARCHIVO_TARJETA );
+	    BufferedReader br = new BufferedReader( fr );
+
+	    br.readLine(); 
+	    for( int i = 2; i <= 17; ++i ){
+		tarjetaMonstruo += ESPACIO + br.readLine() + "\n";
+	    }
+	    fr.close();
+	    br.close();
+	}catch(FileNotFoundException fnfe){
+	    System.out.println("Tarjeta de monstruo no encontrada");    
+	}catch(IOException ioe){
+	    System.out.println("Error al leer la tarjeta de monstruo");   
+	}
+	TARJETA = tarjetaMonstruo;
+
 	this.HP_BASE = hpBase;
 	this.ATAQUE_BASE = hpBase;
 	this.DEFENSA_BASE = defBase;
@@ -324,6 +362,8 @@ public abstract class Monstruo{
 	return this.estado;
     }
 
+    // AquI comienzan los mEtodos "GrAficos"
+
     // Sobreescritura del mEtodo toString de pokEmon que imprime sus 
     //  datos en tarjeta ascii
 
@@ -336,42 +376,29 @@ public abstract class Monstruo{
     @Override
     public String toString(){
 	String cadenaMonstruo = "";
-	try{
-	    FileReader fr = new FileReader( ARCHIVO_TARJETA );
-	    BufferedReader br = new BufferedReader( fr );
-	    cadenaMonstruo += ESPACIO + br.readLine() + "\n";
-	    int disponible = 28 - nombre.length();
-	    String ri = r(".",disponible/2 + disponible%2);
-	    String rd = r(".",disponible/2);
-	    cadenaMonstruo += ESPACIO+"|"+ri+nombre+rd+"|\n";
-	    for( int i = 2; i <= 17; ++i ){
-		cadenaMonstruo += ESPACIO + br.readLine() + "\n";
-	    }
-	    ri = r("_",28);
-	    cadenaMonstruo += ESPACIO+"|"+ri+"|\n";
-	    disponible = 28 - ("Alias: "+apodo).length();
-	    ri = r(" ",disponible/2 + disponible%2);
-	    rd = r(" ",disponible/2);
-	    cadenaMonstruo += ESPACIO+"|"+ri+"Alias: "+apodo+rd+"|\n";
-	    disponible = 28 - ("Nivel: "+nivel).length();
-	    ri = r(" ",disponible/2 + disponible%2);
-	    rd = r(" ",disponible/2);
-	    cadenaMonstruo += ESPACIO+"|"+ri+"Nivel: "+nivel+rd+"|\n";
-	    disponible = 28 - ("Exp faltante: "+expNecesaria).length();
-	    ri = r(" ",disponible/2 + disponible%2);
-	    rd = r(" ",disponible/2);
-	    cadenaMonstruo += ESPACIO+"|"+ri+"Exp faltante: "+expNecesaria+rd+"|\n";
-	    cadenaMonstruo += ESPACIO+br.readLine() + "\n";
 
-	    fr.close();
-	    br.close();
-	}catch(FileNotFoundException fnfe){
-	    System.out.println("Tarjeta de monstruo no encontrada");    
-	}catch(IOException ioe){
-	    System.out.println("Error al leer la tarjeta de monstruo");   
-	}
+	cadenaMonstruo += ARRIBA;
+	int disponible = 28 - nombre.length();
+	String ri = r(".",disponible/2 + disponible%2);
+	String rd = r(".",disponible/2);
+	cadenaMonstruo += ESPACIO+"|"+ri+nombre+rd+"|\n";
+	cadenaMonstruo += TARJETA;
+	ri = r("_",28);
+	cadenaMonstruo += ESPACIO+"|"+ri+"|\n";
+	disponible = 28 - ("Alias: "+apodo).length();
+	ri = r(" ",disponible/2 + disponible%2);
+	rd = r(" ",disponible/2);
+	cadenaMonstruo += ESPACIO+"|"+ri+"Alias: "+apodo+rd+"|\n";
+	disponible = 28 - ("Nivel: "+nivel).length();
+	ri = r(" ",disponible/2 + disponible%2);
+	rd = r(" ",disponible/2);
+	cadenaMonstruo += ESPACIO+"|"+ri+"Nivel: "+nivel+rd+"|\n";
+	disponible = 28 - ("Exp faltante: "+expNecesaria).length();
+	ri = r(" ",disponible/2 + disponible%2);
+	rd = r(" ",disponible/2);
+	cadenaMonstruo += ESPACIO+"|"+ri+"Exp faltante: "+expNecesaria+rd+"|\n";
+	cadenaMonstruo += ABAJO;
 	return cadenaMonstruo;
-
     }
 
     // MEtodos referentes a la "animaciOn"
@@ -383,8 +410,9 @@ public abstract class Monstruo{
      * se le aplica al monstruo
      */
     protected void animarDanio( byte tipoAtaque ){
-	String cadenaMonstruo = "";
+	String cadenaMonstruo = ARRIBA + TARJETA + ABAJO;
 	String tarjetaDanio;
+	int i;
 
 	if( tipoAtaque == 1 ){
 	    tarjetaDanio = DANIO_NORMAL;
@@ -398,16 +426,7 @@ public abstract class Monstruo{
 	}
 
 	try{
-	    int i;
-	    FileReader fr = new FileReader( ARCHIVO_TARJETA );
-	    BufferedReader br = new BufferedReader( fr );
-	    for( i = 1; i <= 18; ++i ){
-		cadenaMonstruo += ESPACIO + br.readLine() + "\n";
-	    }
-	    fr.close();
-	    br.close();
-
-	    for( i = 1; i <= 6; ++i ){
+	    for( i = 1; i <= 8; ++i ){
 		System.out.println(SALTOS);
 		System.out.println(cadenaMonstruo);
 		Thread.sleep(120);
@@ -415,16 +434,25 @@ public abstract class Monstruo{
 		System.out.println(tarjetaDanio);
 		Thread.sleep(120);
 	    }
-	    System.out.println(SALTOS); 
-	    
-	}catch(FileNotFoundException fnfe){
-	    System.out.println("Tarjeta de monstruo no encontrada");    
-	}catch(IOException ioe){
-	    System.out.println("Error al leer la tarjeta de monstruo");   
 	}catch(InterruptedException ie){
-	    System.out.println("Error en la función Thread.sleep");
+	    System.out.println("Se ha interrumido el sleep: ");
+	    System.out.println(ie.getMessage());
 	}
+	System.out.println(SALTOS); 
     }
+
+
+    /**
+     * Parte de arriba de una tarjeta
+     */
+    protected static final String ARRIBA = "" +
+	ESPACIO + ".----------------------------.\n"; 
+
+    /**
+     * Parte de abajo de una tarjeta
+     */
+    protected static final String ABAJO = "" +
+        ESPACIO + "`----------------------------'\n";
 
     /**
      * Cadena que forma la figura en ascii de la curación

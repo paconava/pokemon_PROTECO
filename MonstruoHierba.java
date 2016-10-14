@@ -13,6 +13,8 @@
  */
 
 //import java.util.Scanner;
+import java.io.File;
+
 /**
  * Clase que hereda de Monstruo y lo extiende definiendo
  * algunas características específicas de los monstruos
@@ -40,7 +42,7 @@ public abstract class MonstruoHierba extends Monstruo{
 		atqBase,
 		defBase,
 		velBase,
-		apodo,
+		appodo,
 		nivel
 	);
 

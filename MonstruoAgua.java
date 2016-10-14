@@ -13,6 +13,8 @@
  */
 
 //import java.util.Scanner;
+import java.io.File;
+
 /**
  * Clase que hereda de Monstruo y lo extiende definiendo
  * algunas características específicas de los Monstruos
@@ -52,7 +54,7 @@ public abstract class MonstruoAgua extends Monstruo{
     ){
 	super(
 		"agua",
-		File archTarjeta,
+		archTarjeta,
 		hpBase,
 		atqBase,
 		defBase,
@@ -60,7 +62,6 @@ public abstract class MonstruoAgua extends Monstruo{
 		apodo,
 		nivel
 	);
-
     }
 
     /**

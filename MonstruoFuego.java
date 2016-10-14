@@ -13,6 +13,8 @@
  */
 
 //import java.util.Scanner;
+import java.io.File;
+
 /**
  * Clase que extiende de Monstruo y lo extiende definiendo
  * algunas caractetísticas de forma específica para los 

@@ -13,6 +13,8 @@
  */
 
 //import java.util.Scanner;
+import java.io.File;
+
 /**
  * Clase que hereda de Monstruo y lo extiende definiendo
  * algunas características especificas de los Monstruos
